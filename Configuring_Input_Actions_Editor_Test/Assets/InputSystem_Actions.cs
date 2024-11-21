@@ -1018,7 +1018,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""id"": ""ba3bcb05-36e4-4025-9108-ec5b530df0e4"",
             ""actions"": [
                 {
-                    ""name"": ""AWSD"",
+                    ""name"": ""Move"",
                     ""type"": ""Value"",
                     ""id"": ""2c558de0-c2bb-4a96-94a6-51e4a8013606"",
                     ""expectedControlType"": ""Vector2"",
@@ -1029,46 +1029,68 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""bad41183-dfad-49e1-820a-fe0a4152c645"",
+                    ""name"": ""2D Vector"",
+                    ""id"": ""c08eb470-54fa-44b8-b2be-57ad6e82b52e"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""ad42e7d7-3ec3-491f-84cf-c785f832217e"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""AWSD"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""db32c9fd-db73-4248-9244-dce119449d79"",
+                    ""name"": ""down"",
+                    ""id"": ""c2e1f2f6-39fb-4223-a96a-4500d13d7fa3"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""AWSD"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""5e0cb826-233f-486c-88dd-903d6aee18e6"",
+                    ""name"": ""left"",
+                    ""id"": ""75100572-5b0f-411f-98bf-89f8c5b139a6"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""AWSD"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""46e2eb38-ff41-40a5-b775-2f26a33eaf96"",
+                    ""name"": ""right"",
+                    ""id"": ""61bf86a8-3909-450e-bf94-d99dbef7cb4e"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""AWSD"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""edfd0764-59c3-43af-9480-e92d4675c6f9"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1163,7 +1185,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         // MoveStarship
         m_MoveStarship = asset.FindActionMap("MoveStarship", throwIfNotFound: true);
-        m_MoveStarship_AWSD = m_MoveStarship.FindAction("AWSD", throwIfNotFound: true);
+        m_MoveStarship_Move = m_MoveStarship.FindAction("Move", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1460,12 +1482,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     // MoveStarship
     private readonly InputActionMap m_MoveStarship;
     private List<IMoveStarshipActions> m_MoveStarshipActionsCallbackInterfaces = new List<IMoveStarshipActions>();
-    private readonly InputAction m_MoveStarship_AWSD;
+    private readonly InputAction m_MoveStarship_Move;
     public struct MoveStarshipActions
     {
         private @InputSystem_Actions m_Wrapper;
         public MoveStarshipActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @AWSD => m_Wrapper.m_MoveStarship_AWSD;
+        public InputAction @Move => m_Wrapper.m_MoveStarship_Move;
         public InputActionMap Get() { return m_Wrapper.m_MoveStarship; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1475,16 +1497,16 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_MoveStarshipActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_MoveStarshipActionsCallbackInterfaces.Add(instance);
-            @AWSD.started += instance.OnAWSD;
-            @AWSD.performed += instance.OnAWSD;
-            @AWSD.canceled += instance.OnAWSD;
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
         }
 
         private void UnregisterCallbacks(IMoveStarshipActions instance)
         {
-            @AWSD.started -= instance.OnAWSD;
-            @AWSD.performed -= instance.OnAWSD;
-            @AWSD.canceled -= instance.OnAWSD;
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
         }
 
         public void RemoveCallbacks(IMoveStarshipActions instance)
@@ -1574,6 +1596,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     }
     public interface IMoveStarshipActions
     {
-        void OnAWSD(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
     }
 }
