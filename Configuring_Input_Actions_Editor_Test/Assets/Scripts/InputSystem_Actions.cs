@@ -1012,89 +1012,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
-        },
-        {
-            ""name"": ""MoveStarship"",
-            ""id"": ""ba3bcb05-36e4-4025-9108-ec5b530df0e4"",
-            ""actions"": [
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""2c558de0-c2bb-4a96-94a6-51e4a8013606"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""c08eb470-54fa-44b8-b2be-57ad6e82b52e"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""ad42e7d7-3ec3-491f-84cf-c785f832217e"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""c2e1f2f6-39fb-4223-a96a-4500d13d7fa3"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""75100572-5b0f-411f-98bf-89f8c5b139a6"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""61bf86a8-3909-450e-bf94-d99dbef7cb4e"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""edfd0764-59c3-43af-9480-e92d4675c6f9"",
-                    ""path"": ""<Gamepad>/dpad"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
         }
     ],
     ""controlSchemes"": [
@@ -1183,16 +1100,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
-        // MoveStarship
-        m_MoveStarship = asset.FindActionMap("MoveStarship", throwIfNotFound: true);
-        m_MoveStarship_Move = m_MoveStarship.FindAction("Move", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_MoveStarship.enabled, "This will cause a leak and performance issues, InputSystem_Actions.MoveStarship.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -1478,52 +1391,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
-
-    // MoveStarship
-    private readonly InputActionMap m_MoveStarship;
-    private List<IMoveStarshipActions> m_MoveStarshipActionsCallbackInterfaces = new List<IMoveStarshipActions>();
-    private readonly InputAction m_MoveStarship_Move;
-    public struct MoveStarshipActions
-    {
-        private @InputSystem_Actions m_Wrapper;
-        public MoveStarshipActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_MoveStarship_Move;
-        public InputActionMap Get() { return m_Wrapper.m_MoveStarship; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MoveStarshipActions set) { return set.Get(); }
-        public void AddCallbacks(IMoveStarshipActions instance)
-        {
-            if (instance == null || m_Wrapper.m_MoveStarshipActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_MoveStarshipActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-        }
-
-        private void UnregisterCallbacks(IMoveStarshipActions instance)
-        {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-        }
-
-        public void RemoveCallbacks(IMoveStarshipActions instance)
-        {
-            if (m_Wrapper.m_MoveStarshipActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IMoveStarshipActions instance)
-        {
-            foreach (var item in m_Wrapper.m_MoveStarshipActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_MoveStarshipActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public MoveStarshipActions @MoveStarship => new MoveStarshipActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1593,9 +1460,5 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnScrollWheel(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
-    }
-    public interface IMoveStarshipActions
-    {
-        void OnMove(InputAction.CallbackContext context);
     }
 }
